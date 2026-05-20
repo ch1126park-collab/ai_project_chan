@@ -1,0 +1,42 @@
+name: AI Workflow Check
+
+on:
+  # main 브랜치에 push될 때만 워크플로를 실행합니다.
+  push:
+    branches:
+      - main
+
+jobs:
+  check-project:
+    # 우분투 최신 실행 환경을 사용합니다.
+    runs-on: ubuntu-latest
+
+    steps:
+      # 저장소 코드를 워크플로 환경으로 가져옵니다.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 실행 시작 메시지를 출력합니다.
+      - name: Print workflow messages
+        run: |
+          echo "코드 수정이 일어났습니다."
+          echo "AI Workflow 자동화가 실행되었습니다."
+
+      # 현재 프로젝트 파일 목록을 출력합니다.
+      - name: Show project files
+        run: ls -la
+
+      # 필수 파일 존재 여부를 확인합니다.
+      # 하나라도 없으면 exit 1로 실패 처리합니다.
+      - name: Check required files
+        run: |
+          for file in index.html script.js style.css README.md; do
+            if [ ! -f "$file" ]; then
+              echo "필수 파일이 없습니다: $file"
+              exit 1
+            fi
+          done
+
+      # 모든 검사가 끝났다는 메시지를 출력합니다.
+      - name: Finish check
+        run: echo "자동 검사 완료"
